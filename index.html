@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Comandos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f3f4f6;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 1200px;
+            background: linear-gradient(to right, #1e90ff, #00bfff);
+            padding: 20px;
+            color: white;
+            border-radius: 0 0 15px 15px;
+        }
+
+        .logo {
+            height: 60px;
+        }
+
+        .titulo {
+            text-align: center;
+            flex: 1;
+        }
+
+        .titulo h1 {
+            font-size: 28px;
+            margin: 0;
+        }
+
+        .titulo p {
+            font-size: 14px;
+            margin: 0;
+        }
+
+        #container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            width: 100%;
+            max-width: 1200px;
+            padding: 20px;
+        }
+
+        #botaoForm {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            max-width: 300px;
+        }
+
+        #botaoForm label {
+            font-weight: bold;
+            color: #555;
+        }
+
+        #botaoForm input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        #botaoForm button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        #botaoForm button:hover {
+            background-color: #45a049;
+        }
+
+        #painel {
+            flex: 1;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-left: 20px;
+            text-align: center;
+        }
+
+        #painelTitulo {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .linhaBotoes {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: flex-start;
+        }
+
+        .botaoContainer {
+            width: 200px;
+            background: #f9f9f9;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+            text-align: center;
+        }
+
+        .botaoPrincipal {
+            width: 100%;
+            padding: 10px 0;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .botaoPrincipal:hover {
+            background-color: #0056b3;
+        }
+
+        .botoesSecundarios {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 10px;
+        }
+
+        .botoesSecundarios button {
+            width: 45%;
+            padding: 5px 0;
+            font-size: 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .botoesSecundarios .editar {
+            background-color: green;
+            color: white;
+        }
+
+        .botoesSecundarios .editar:hover {
+            background-color: greenyellow;
+        }
+
+        .botoesSecundarios .excluir {
+            background-color: rgb(2, 2, 194);
+            color: white;
+        }
+
+        .botoesSecundarios .excluir:hover {
+            background-color: #cc3700;
+        }
+
+        footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 14px;
+            color: #777;
+        }
+
+        .linha{
+            color: #00bfff;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="img/logo1-removebg-preview.png" alt="Logo" class="logo">
+        <br><br><br><p>Unidade Rio Verde/GO</p>
+        <div class="titulo">
+            <h1>Painel de Comandos E Acessos</h1>
+            <p>Centralizador de acessos relacionados</p>
+        </div>
+    </header>
+    <div id="container">
+        <form id="botaoForm">
+            <label for="nomeBotao">Nome do Botão:</label>
+            <input type="text" id="nomeBotao" name="nomeBotao" placeholder="Ex: Google" required>
+            
+            <label for="linkBotao">Link do Botão:</label>
+            <input type="url" id="linkBotao" name="linkBotao" placeholder="Ex: https://www.google.com" required>
+            
+            <button type="submit">Criar Botão</button>
+        </form>
+        
+        <div id="painel">
+            <p id="painelTitulo">Meus Comandos Facilitadores:</p>
+            <p class="linha"><b>_________________________________________________________________________________________</b></p>
+            <div class="linhaBotoes" id="linhaBotoes"></div>
+        </div>
+    </div>
+    <footer>
+        Desenvolvido por Arnaldo S. Lima
+    </footer>
+    <script>
+        function carregarBotoes() {
+            const botoesSalvos = JSON.parse(localStorage.getItem('botoes')) || [];
+            botoesSalvos.forEach(botao => adicionarBotao(botao.nome, botao.link, false));
+        }
+
+        function adicionarBotao(nome, link, salvar = true) {
+            const botaoContainer = document.createElement('div');
+            botaoContainer.classList.add('botaoContainer');
+
+            const novoBotao = document.createElement('button');
+            novoBotao.textContent = nome;
+            novoBotao.classList.add('botaoPrincipal');
+            novoBotao.addEventListener('click', function() {
+                window.open(link, '_blank');
+            });
+
+            const botoesSecundarios = document.createElement('div');
+            botoesSecundarios.classList.add('botoesSecundarios');
+
+            const botaoEditar = document.createElement('button');
+            botaoEditar.textContent = 'Editar';
+            botaoEditar.classList.add('editar');
+            botaoEditar.addEventListener('click', function() {
+                const novoNome = prompt('Edite o nome do botão:', nome);
+                const novoLink = prompt('Edite o link do botão:', link);
+
+                if (novoNome && novoLink) {
+                    novoBotao.textContent = novoNome;
+                    link = novoLink;
+                    atualizarLocalStorage();
+                }
+            });
+
+            const botaoExcluir = document.createElement('button');
+            botaoExcluir.textContent = 'Excluir';
+            botaoExcluir.classList.add('excluir');
+            botaoExcluir.addEventListener('click', function() {
+                botaoContainer.remove();
+                atualizarLocalStorage();
+            });
+
+            botoesSecundarios.appendChild(botaoEditar);
+            botoesSecundarios.appendChild(botaoExcluir);
+
+            botaoContainer.appendChild(novoBotao);
+            botaoContainer.appendChild(botoesSecundarios);
+
+            document.getElementById('linhaBotoes').appendChild(botaoContainer);
+
+            if (salvar) {
+                atualizarLocalStorage();
+            }
+
+            function atualizarLocalStorage() {
+                const botoesAtuais = Array.from(document.querySelectorAll('.botaoContainer')).map(container => {
+                    const botao = container.querySelector('.botaoPrincipal');
+                    return { nome: botao.textContent, link };
+                });
+                localStorage.setItem('botoes', JSON.stringify(botoesAtuais));
+            }
+        }
+
+        document.getElementById('botaoForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const nomeBotao = document.getElementById('nomeBotao').value;
+            const linkBotao = document.getElementById('linkBotao').value;
+
+            adicionarBotao(nomeBotao, linkBotao);
+
+            document.getElementById('nomeBotao').value = '';
+            document.getElementById('linkBotao').value = '';
+        });
+
+        carregarBotoes();
+    </script>
+</body>
+</html>
